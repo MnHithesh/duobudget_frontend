@@ -35,7 +35,7 @@ export default function Header() {
                             variant="outlined"
                             color="primary"
                             sx={{ textTransform: "none", fontWeight: 500 }}
-                            href="/signup"
+                            href="/registration"
                         >
                             Sign up
                         </Button>
