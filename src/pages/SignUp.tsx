@@ -1,26 +1,47 @@
 import * as React from "react";
 import {
     Box, Typography, Step, StepLabel, Stepper, StepContent,
-    Stack, Container, TextField, Radio, RadioGroup, FormControlLabel, Button
+    Stack, Container, TextField, Radio, RadioGroup, FormControlLabel, Button,
+    InputAdornment, IconButton
 } from "../shared/Material";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "../shared/Snackbar/SnackbarContext";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const steps = ["Account Info", "Mode", "Finish"];
 
 export default function SignUp() {
+    const { showSnackbar } = useSnackbar();
     const [activeStep, setActiveStep] = React.useState(0);
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [confirmPassword, setConfirmPassword] = React.useState("");
     const [mode, setMode] = React.useState<"individual" | "couple">("individual");
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
     const navigate = useNavigate();
 
-    const canNextFromStep0 = email.trim() !== "" && password.trim() !== "";
+    const passwordsMatch =
+        password.trim() !== "" &&
+        confirmPassword.trim() !== "" &&
+        password === confirmPassword;
+
+    const canNextFromStep0 =
+        email.trim() !== "" && password.trim() !== "" && passwordsMatch;
 
     const handleNext = () => {
+        if (activeStep === 0 && !passwordsMatch) {
+            showSnackbar("error", "Passwords do not match.");
+            return;
+        }
+
         if (activeStep === steps.length - 1) {
+            showSnackbar("success", "Account created successfully!");
             navigate("/dashboard");
             return;
         }
+
         setActiveStep((prev) => prev + 1);
     };
 
@@ -29,19 +50,16 @@ export default function SignUp() {
         setActiveStep(0);
         setEmail("");
         setPassword("");
+        setConfirmPassword("");
         setMode("individual");
     };
 
     const getIllustration = () => {
         switch (activeStep) {
-            case 0:
-                return "/assets/illustrators/account.svg";
-            case 1:
-                return "/assets/illustrators/mode.svg";
-            case 2:
-                return "/assets/illustrators/finish.svg";
-            default:
-                return "/assets/illustrators/account.svg";
+            case 0: return "/assets/illustrators/account.svg";
+            case 1: return "/assets/illustrators/mode.svg";
+            case 2: return "/assets/illustrators/finish.svg";
+            default: return "/assets/illustrators/account.svg";
         }
     };
 
@@ -53,7 +71,6 @@ export default function SignUp() {
                 justifyContent="space-between"
                 spacing={4}
             >
-                {/* Left: Stepper + content */}
                 <Box sx={{ maxWidth: 480, width: "100%" }}>
                     <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
                         Create your DuoBudget account
@@ -72,16 +89,68 @@ export default function SignUp() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
+
+                                    {/* Password Field with toggle */}
                                     <TextField
                                         label="Password"
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         fullWidth
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowPassword((prev) => !prev)}
+                                                            edge="end"
+                                                            aria-label="toggle password visibility"
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            },
+                                        }}
+                                    />
+
+                                    {/* Confirm Password Field with toggle */}
+                                    <TextField
+                                        label="Confirm Password"
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        fullWidth
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        error={confirmPassword !== "" && !passwordsMatch}
+                                        helperText={
+                                            confirmPassword !== "" && !passwordsMatch
+                                                ? "Passwords must match."
+                                                : " "
+                                        }
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                                            edge="end"
+                                                            aria-label="toggle confirm password visibility"
+                                                        >
+                                                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            },
+                                        }}
                                     />
                                 </Stack>
+
                                 <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
-                                    <Button variant="contained" onClick={handleNext} disabled={!canNextFromStep0}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleNext}
+                                        disabled={!canNextFromStep0}
+                                    >
                                         Next
                                     </Button>
                                 </Box>
@@ -97,14 +166,26 @@ export default function SignUp() {
                                 </Typography>
                                 <RadioGroup
                                     value={mode}
-                                    onChange={(e) => setMode(e.target.value as "individual" | "couple")}
+                                    onChange={(e) =>
+                                        setMode(e.target.value as "individual" | "couple")
+                                    }
                                 >
-                                    <FormControlLabel value="individual" control={<Radio />} label="For myself (Individual)" />
-                                    <FormControlLabel value="couple" control={<Radio />} label="With my partner (Couple)" />
+                                    <FormControlLabel
+                                        value="individual"
+                                        control={<Radio />}
+                                        label="For myself (Individual)"
+                                    />
+                                    <FormControlLabel
+                                        value="couple"
+                                        control={<Radio />}
+                                        label="With my partner (Couple)"
+                                    />
                                 </RadioGroup>
                                 <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
                                     <Button onClick={handleBack}>Back</Button>
-                                    <Button variant="contained" onClick={handleNext}>Next</Button>
+                                    <Button variant="contained" onClick={handleNext}>
+                                        Next
+                                    </Button>
                                 </Box>
                             </StepContent>
                         </Step>

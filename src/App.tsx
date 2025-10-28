@@ -3,6 +3,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/registration' element={<SignUp />} />
+          <Route path='/login' element={<Login />} />
         </Routes>
       </main>
       <Footer />
