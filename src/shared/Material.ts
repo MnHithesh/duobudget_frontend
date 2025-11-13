@@ -36,6 +36,12 @@ export { default as Alert } from '@mui/material/Alert';
 export { default as Snackbar } from '@mui/material/Snackbar';
 export { default as InputAdornment } from '@mui/material/InputAdornment';
 export { default as Tooltip } from '@mui/material/Tooltip';
+export { default as Card } from '@mui/material/Card';
+export { default as CardContent } from '@mui/material/CardContent';
+export { default as Avatar } from '@mui/material/Avatar';
+export { default as Menu }  from '@mui/material/Menu';
+export { default as MenuItem }  from '@mui/material/MenuItem';
+export { default as LinearProgress }  from '@mui/material/LinearProgress';
+export  { default as SpeedDial } from '@mui/material/SpeedDial';
+export  { default as SpeedDialAction } from '@mui/material/SpeedDialAction';
 
-
-export type { TransitionProps } from "@mui/material/transitions";

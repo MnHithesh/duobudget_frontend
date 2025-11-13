@@ -16,6 +16,8 @@
     "@mui/material": "^7.3.4",
     "@mui/system": "^7.3.3",
     "@mui/utils": "^7.3.3",
+    "highcharts": "^12.4.0",
+    "highcharts-react-official": "^3.2.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4"

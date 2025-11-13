@@ -5,13 +5,16 @@ import './index.css'
 import App from './App.tsx';
 import { SnackbarProvider } from './shared/Snackbar/SnackbarContext';
 import './shared/Snackbar/snackbar.css';
+import { AuthProvider } from './context/AuthContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <SnackbarProvider>
-        <App />
-      </SnackbarProvider>
+      <AuthProvider>
+        <SnackbarProvider>
+          <App />
+        </SnackbarProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

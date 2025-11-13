@@ -11,12 +11,13 @@ import {
     Divider,
     Tooltip,
 } from "../shared/Material";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSnackbar } from "../shared/Snackbar/SnackbarContext";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import GoogleIcon from '@mui/icons-material/Google';
 import { styled } from '@mui/material/styles';
+import { useAuth } from "../context/AuthContext";
 
 const Root = styled('div')(({ theme }) => ({
     width: '100%',
@@ -31,14 +32,21 @@ export default function Login() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [showPassword, setShowPassword] = React.useState(false);
-    const navigate = useNavigate();
+    const { signin } = useAuth();
     const { showSnackbar } = useSnackbar();
 
+
     const loginRequest = () => {
+        const userData = {
+            name: "Hithesh Nandeesh",
+            email: email,
+            mode: "couple" as "couple",
+        };
+
+        signin(userData);
+
         showSnackbar("success", "Logged in successfully!");
-        navigate("/dashboard");
-    };
-    const googleOAuth = () => { }
+    }
 
     const isFormValid = email.trim() !== "" && password.trim() !== "";
 
@@ -116,7 +124,6 @@ export default function Login() {
                                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                                     <Tooltip title="Google">
                                         <IconButton
-                                            onClick={googleOAuth}
                                             edge="end"
                                             aria-label="Google OAuth"
                                             sx={{
@@ -136,7 +143,7 @@ export default function Login() {
                                         to="/registration"
                                         style={{
                                             textDecoration: "none",
-                                            color: "#1976d2", 
+                                            color: "#1976d2",
                                             fontWeight: 600,
                                         }}
                                     >
